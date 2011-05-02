@@ -1,0 +1,21 @@
+{
+    "name": "Foobele (by Foogaro)",
+    "version": "1.2.0",
+    "description": "Translate any language to any language. Select-n-Translate.",
+    "icons": {
+        "16": "foobele16.png",
+        "48": "foobele48.png",
+        "128": "foobele128.png"
+    },
+    "browser_action": {
+        "default_icon": "foobele16.png",
+        "default_title": "Foobele (by Foogaro)",
+        "default_popup": "popup.html"
+    },
+    "permissions": [
+        "tabs",
+        "chrome://favicon/",
+        "http://*/*",
+        "https://*/*"
+    ]
+}
