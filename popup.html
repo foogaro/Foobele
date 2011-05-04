@@ -92,7 +92,9 @@
             }
 
             function doTranslate() {
-                if (textToTranslate != '' || textToTranslate != null) {
+                if (textToTranslate == '' || textToTranslate == null) {
+                    showMe();
+                } else {
                     $("#loading").show();
                     $("#viewSourceText").html(textToTranslate);
                     $.ajax({
@@ -106,8 +108,6 @@
                             $("#loading").hide();
                         }
                     });
-                } else {
-                    showMe();
                 }
             }
 
@@ -129,7 +129,7 @@
 
             function showMe() {
                 $("body").empty();
-                $("body").append('<p align="center"><img id="imgSource" src="http://www.foogaro.com/chrome-extension/foobele/flags/swear.gif" /></p>');
+                $("body").append('<p align="center"><img id="imgSource" src="http://www.foogaro.com/chrome-extension/foobele/images/swear.gif" /></p>');
             }
 
             function handleGoogleApiKey() {
@@ -152,12 +152,12 @@
                 $("#viewSourceText").click(function () {
                     prepareEditSourceText();
                 });
-                $("#editSourceText").keydown(function (event) {
-                    if (event.keyCode == '13') {
-                        updateSourceText();
-                        event.preventDefault();
-                    }
-                });
+//                $("#editSourceText").keydown(function (event) {
+//                    if (event.keyCode == '13') {
+//                        updateSourceText();
+//                        event.preventDefault();
+//                    }
+//                });
                 $("#editSourceText").blur(function () {
                     updateSourceText();
                 });
@@ -222,7 +222,8 @@
 
             function updateSourceText() {
                 textToTranslate = $("#editSourceText").val();
-                $("#viewSourceText").text(textToTranslate);
+                //$("#viewSourceText").text(textToTranslate);
+                textareaViewMode();
                 $("#editSourceText").hide();
                 $("#viewSourceText").show();
             }
@@ -419,6 +420,40 @@
 
             }
 
+            function textareaViewMode() {
+                var textarea = $('#editSourceText');
+                var replaceWith = '<br />';
+
+                //encode all characters in text area
+                var tv1 = encodeURIComponent($(textarea).val());
+
+                //to find carriage return character
+                for(i=0; i < tv1.length; i++)
+                {
+                    //loop through string, replacing carriage return
+                    //encoding with HTML break tag
+                    if(tv1.indexOf("%0D%0A") > -1)
+                    {
+                        //Windows encodes returns as \r\n hex
+                        tv1=tv1.replace("%0D%0A",replaceWith);
+                    }
+                    else if(tv1.indexOf("%0A") > -1)
+                    {
+                        //Unix encodes returns as \n hex
+                        tv1=tv1.replace("%0A",replaceWith);
+                    }
+                    else if(tv1.indexOf("%0D") > -1)
+                    {
+                        //Macintosh encodes returns as \r hex
+                        tv1=tv1.replace("%0D",replaceWith);
+                    }
+                }
+
+                //decode all characters in text area back
+                var tv2 = decodeURIComponent(tv1);
+                $('#viewSourceText').html(tv2);
+            }
+
         </script>
     </head>
     <body>
@@ -436,8 +471,9 @@
             <div id="source">
                 <div id="currSource"><img id="flagSource" src="http://www.foogaro.com/chrome-extension/foobele/flags/en.gif" /><span id="descSource"></span></div>
                 <div id="txtSource" >
-                    <span id="viewSourceText"></span>
-                    <input id="editSourceText" type="text" value="" style="display: none;">
+                    <div id="viewSourceText" style="overflow-x: auto; height: 65px;"></div>
+                    <textarea id="editSourceText" cols="40" rows="4" style="resize: none; overflow-x: hidden; display: none;"></textarea>
+                    <!--<input id="editSourceText" type="text" value="" style="display: none;">-->
                 </div>
             </div>
             <hr id="hrTranslate" />
@@ -446,7 +482,7 @@
                     <img id="flagTarget" src="http://www.foogaro.com/chrome-extension/foobele/flags/it.gif" /><span id="descTarget"></span>
                     <img id="loading" style="display: none;" src="http://www.foogaro.com/chrome-extension/foobele/images/loading.gif" alt="">
                 </div>
-                <div id="txtTarget" ></div>
+                <div id="txtTarget" style="background-color: #ffffcc; overflow-x: auto; height: 65px;"></div>
             </div>
 
             
